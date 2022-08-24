@@ -1,7 +1,22 @@
+const plugin = require("tailwindcss/plugin");
+const colors = require("tailwindcss/colors");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  content: [
+    './pages/**/*.{js,jsx,ts,tsx}',
+    './components/**/*.{js,jsx,ts,tsx}',
+    './layouts/**/*.{js,jsx,ts,tsx}'
+  ],
   theme: {
+    colors: {
+      ...colors,
+      green: colors.emerald,
+      yellow: colors.amber,
+      purple: colors.violet,
+      gray: colors.neutral,
+      current: 'currentColor',
+    },
     extend: {
       minHeight: {
         "screen-75": "75vh",
