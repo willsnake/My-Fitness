@@ -5,7 +5,7 @@
     "build": "next build",
     "start": "next start",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && pnpm install && pnpm run build:tailwind && pnpm run dev",
-    "build:tailwind": "tailwind build styles/index.css -o styles/tailwind.css"
+    "build:tailwind": "tailwindcss -i styles/index.css -o styles/tailwind.css"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.15.3",
