@@ -1,7 +1,12 @@
+import { ReactNode} from 'react'
 import Navbar from "components/Navbars/AuthNavbar"
 import FooterSmall from "components/Footers/FooterSmall"
 
-export default function Auth({ children }) {
+type AuthProps = {
+  children: ReactNode
+}
+
+export default function Auth({ children }: AuthProps) {
   return (
     <>
       <Navbar transparent />
