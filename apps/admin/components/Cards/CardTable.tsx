@@ -1,4 +1,4 @@
-import TableDropdown from "components/Dropdowns/TableDropdown.js"
+import TableDropdown from "components/Dropdowns/TableDropdown"
 
 type CardTableProps = {
   color: "light" | "dark"

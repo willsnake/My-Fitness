@@ -2,9 +2,9 @@ import { useState } from "react";
 import Link from "next/link";
 // components
 
-import PagesDropdown from "components/Dropdowns/PagesDropdown.js";
+import PagesDropdown from "components/Dropdowns/PagesDropdown";
 
-export default function Navbar(props) {
+export default function Navbar() {
   const [navbarOpen, setNavbarOpen] = useState(false);
   return (
     <>
