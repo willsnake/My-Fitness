@@ -1,5 +1,7 @@
 import { ReactElement } from "react"
-import StyledFirebaseAuth from "react-firebaseui/FirebaseAuth"
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+// import StyledFirebaseAuth from "react-firebaseui/FirebaseAuth"
 
 // layout for page
 
@@ -9,109 +11,160 @@ import type { NextPageWithLayout } from 'pages/_app'
 import firebase from "../../firebase/clientApp";
 
 // Configure FirebaseUI.
-const uiConfig = {
-  // Redirect to / after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-  signInSuccessUrl: "/",
-  // GitHub as the only included Auth Provider.
-  // You could add and configure more here!
-  signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
-};
+// const uiConfig = {
+//   // Redirect to / after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
+//   signInSuccessUrl: "/",
+//   // GitHub as the only included Auth Provider.
+//   // You could add and configure more here!
+//   signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
+// };
+{/* <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} /> */}
 
 const Register: NextPageWithLayout = () => {
-  console.log("🚀 ~ file: register.tsx ~ line 9 ~ firebase.auth", firebase.auth)
+  // console.log("🚀 ~ file: register.tsx ~ line 12 ~ firebase.auth()", firebase.auth())
+
+  const formik = useFormik({
+     initialValues: {
+        name: '',
+        apellidos: '',
+        email: '',
+        password: '',
+        politicas: []
+     },
+     validationSchema: Yup.object({
+       name: Yup.string()
+         .required('Requerido'),
+       email: Yup.string().email('El email es invalido').required('Requerido'),
+       password: Yup.string()
+        //  .min(16, 'El password debe de tener mínimo 16 caracteres')
+         .required('Requerido'),
+       politicas: Yup.array()
+         .length(1)
+         .required('Requerido'),
+     }),
+    onSubmit: async values => {
+        // {
+        //   "name": "Daniel",
+        //   "apellidos": "Monroy",
+        //   "email": "willsnake87@gmail.com",
+        //   "password": "asdadasd",
+        //   "politicas": [
+        //     "on"
+        //   ]
+        // }
+      const { user } = await firebase.auth().createUserWithEmailAndPassword(values.email, values.password)
+      console.log("🚀 ~ file: register.tsx ~ line 56 ~ user.toJSON()", user.toJSON())
+
+       console.log(JSON.stringify(values, null, 2));
+     },
+   });
+
   return (
     <>
       <div className="container mx-auto px-4 h-full">
         <div className="flex content-center items-center justify-center h-full">
           <div className="w-full lg:w-6/12 px-4">
-          <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
-            {/* <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-200 border-0">
-              <div className="rounded-t mb-0 px-6 py-6">
+            <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-slate-200 border-0">
+              <div className="flex-auto px-4 lg:px-10 py-10 pt-6">
                 <div className="text-center mb-3">
-                  <h6 className="text-blueGray-500 text-sm font-bold">
+                  <h6 className="text-slate-500 text-sm font-bold">
                     Sign up with
                   </h6>
                 </div>
-                <div className="btn-wrapper text-center">
-                  <button
-                    className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
-                    type="button"
-                  >
-                    <img alt="..." className="w-5 mr-1" src="/img/github.svg" />
-                    Github
-                  </button>
-                  <button
-                    className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
-                    type="button"
-                  >
-                    <img alt="..." className="w-5 mr-1" src="/img/google.svg" />
-                    Google
-                  </button>
-                </div>
-                <hr className="mt-6 border-b-1 border-blueGray-300" />
-              </div>
-              <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-                <div className="text-blueGray-400 text-center mb-3 font-bold">
-                  <small>Or sign up with credentials</small>
-                </div>
-                <form>
+                <form onSubmit={formik.handleSubmit}
+                >
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
+                      className="block uppercase text-slate-600 text-xs font-bold mb-2"
+                      htmlFor="name"
                     >
-                      Name
+                      Nombre
                     </label>
                     <input
-                      type="email"
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Name"
+                      className="border-0 px-3 py-3 placeholder-slate-300 text-slate-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      id="name"
+                      placeholder="Nombre"
+                      type="text"
+                      {...formik.getFieldProps('name')}
                     />
+                    {formik.touched.name && formik.errors.name ? (
+                      <div>{formik.errors.name}</div>
+                    ) : null}
                   </div>
 
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
+                      className="block uppercase text-slate-600 text-xs font-bold mb-2"
+                      htmlFor="apellidos"
+                    >
+                      Apellidos
+                    </label>
+                    <input
+                      className="border-0 px-3 py-3 placeholder-slate-300 text-slate-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      id="apellidos"
+                      placeholder="Apellidos"
+                      type="text"
+                      {...formik.getFieldProps('apellidos')}
+                    />
+                    {formik.touched.apellidos && formik.errors.apellidos ? (
+                      <div>{formik.errors.apellidos}</div>
+                    ) : null}
+                  </div>
+
+                  <div className="relative w-full mb-3">
+                    <label
+                      className="block uppercase text-slate-600 text-xs font-bold mb-2"
+                      htmlFor="email"
                     >
                       Email
                     </label>
                     <input
-                      type="email"
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      className="border-0 px-3 py-3 placeholder-slate-300 text-slate-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      id="email"
                       placeholder="Email"
+                      type="email"
+                      {...formik.getFieldProps('email')}
                     />
+                    {formik.touched.email && formik.errors.email ? (
+                      <div>{formik.errors.email}</div>
+                    ) : null}
                   </div>
 
                   <div className="relative w-full mb-3">
                     <label
-                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
+                      className="block uppercase text-slate-600 text-xs font-bold mb-2"
+                      htmlFor="password"
                     >
-                      Password
+                      Contraseña
                     </label>
                     <input
+                      className="border-0 px-3 py-3 placeholder-slate-300 text-slate-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      id="password"
+                      placeholder="Contraseña"
                       type="password"
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Password"
+                      {...formik.getFieldProps('password')}
                     />
+                    {formik.touched.password && formik.errors.password ? (
+                      <div>{formik.errors.password}</div>
+                    ) : null}
                   </div>
 
                   <div>
                     <label className="inline-flex items-center cursor-pointer">
                       <input
-                        id="customCheckLogin"
+                        id="politicas"
+                        name="politicas"
                         type="checkbox"
-                        className="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
+                        className="form-checkbox border-0 rounded text-slate-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
+                        onChange={formik.handleChange}
                       />
-                      <span className="ml-2 text-sm font-semibold text-blueGray-600">
-                        I agree with the{" "}
+                      <span className="ml-2 text-sm font-semibold text-slate-600">
+                        Estoy de acuerdo con las{" "}
                         <a
                           href="#pablo"
-                          className="text-lightBlue-500"
-                          onClick={(e) => e.preventDefault()}
+                          className="text-sky-500"
                         >
-                          Privacy Policy
+                          Politicas de Privacidad
                         </a>
                       </span>
                     </label>
@@ -119,15 +172,15 @@ const Register: NextPageWithLayout = () => {
 
                   <div className="text-center mt-6">
                     <button
-                      className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                      type="button"
+                      className="bg-slate-800 text-white active:bg-slate-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                      type="submit"
                     >
-                      Create Account
-                    </button>
+                      Crear cuenta
+                      </button>
                   </div>
                 </form>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
