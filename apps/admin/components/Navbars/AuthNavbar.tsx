@@ -1,8 +1,5 @@
 import { useState } from "react";
 import Link from "next/link";
-// components
-
-import PagesDropdown from "components/Dropdowns/PagesDropdown";
 
 export default function Navbar() {
   const [navbarOpen, setNavbarOpen] = useState(false);
@@ -28,7 +25,7 @@ export default function Navbar() {
           >
             <ul className="flex flex-col lg:flex-row list-none lg:ml-auto">
               <li className="flex items-center">
-                <Link href='auth/login'
+                <Link href='/auth/login'
                 >
                   <button
                    className="bg-white text-slate-700 active:bg-slate-50 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
