@@ -1,11 +1,11 @@
 const plugin = require("tailwindcss/plugin");
 const colors = require("tailwindcss/colors");
 
-delete colors['lightBlue'];
-delete colors['warmGray'];
-delete colors['trueGray'];
-delete colors['coolGray'];
-delete colors['blueGray'];
+delete colors['lightBlue']; // replaced by 'sky'
+delete colors['warmGray']; // replaced by 'stone'
+delete colors['trueGray']; // replaced by 'neutral'
+delete colors['coolGray']; // replaced by 'gray'
+delete colors['blueGray']; // replaced by 'slate'
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {

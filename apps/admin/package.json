@@ -12,12 +12,15 @@
     "@popperjs/core": "2.9.1",
     "chart.js": "2.9.4",
     "date-fns": "^2.29.2",
+    "firebase": "^9.9.3",
+    "formik": "^2.2.9",
     "gray-matter": "^4.0.3",
+    "immer": "^9.0.15",
     "next": "latest",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "remark": "^14.0.2",
-    "remark-html": "^15.0.1"
+    "yup": "^0.32.11",
+    "zustand": "^4.1.1"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.2",
