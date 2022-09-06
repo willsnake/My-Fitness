@@ -1,63 +1,66 @@
 import { ReactElement } from "react"
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-// import StyledFirebaseAuth from "react-firebaseui/FirebaseAuth"
-
-// layout for page
+import { useRouter } from 'next/router';
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 
 import AuthLayout from "layouts/Auth"
+import { userStore } from 'store'
 import type { NextPageWithLayout } from 'pages/_app'
 
 import firebase from "../../firebase/clientApp";
 
-// Configure FirebaseUI.
-// const uiConfig = {
-//   // Redirect to / after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-//   signInSuccessUrl: "/",
-//   // GitHub as the only included Auth Provider.
-//   // You could add and configure more here!
-//   signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
-// };
-{/* <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} /> */}
-
 const Register: NextPageWithLayout = () => {
-  // console.log("🚀 ~ file: register.tsx ~ line 12 ~ firebase.auth()", firebase.auth())
+  const router = useRouter();
+  const setUser = userStore((state) => state.setUser)
 
   const formik = useFormik({
-     initialValues: {
-        name: '',
-        apellidos: '',
-        email: '',
-        password: '',
-        politicas: []
-     },
-     validationSchema: Yup.object({
-       name: Yup.string()
-         .required('Requerido'),
-       email: Yup.string().email('El email es invalido').required('Requerido'),
-       password: Yup.string()
-        //  .min(16, 'El password debe de tener mínimo 16 caracteres')
-         .required('Requerido'),
-       politicas: Yup.array()
-         .length(1)
-         .required('Requerido'),
-     }),
+    initialValues: {
+      name: '',
+      apellidos: '',
+      email: '',
+      password: '',
+      politicas: []
+    },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .required('Requerido'),
+      email: Yup.string().email('El email es invalido').required('Requerido'),
+      password: Yup.string()
+       .min(16, 'El password debe de tener mínimo 16 caracteres')
+        .required('Requerido'),
+      politicas: Yup.array()
+        .length(1)
+        .required('Requerido'),
+    }),
     onSubmit: async values => {
-        // {
-        //   "name": "Daniel",
-        //   "apellidos": "Monroy",
-        //   "email": "willsnake87@gmail.com",
-        //   "password": "asdadasd",
-        //   "politicas": [
-        //     "on"
-        //   ]
-        // }
-      const { user } = await firebase.auth().createUserWithEmailAndPassword(values.email, values.password)
-      console.log("🚀 ~ file: register.tsx ~ line 56 ~ user.toJSON()", user.toJSON())
-
-       console.log(JSON.stringify(values, null, 2));
-     },
-   });
+      const {
+        apellidos,
+        email,
+        name,
+        password,
+        politicas
+      } = values
+    const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password)
+    await firebase.firestore().collection("users").doc(user.uid).set({
+        displayName: user.displayName || name,
+        emailVerified: user.emailVerified,
+        isAnonymous: user.isAnonymous,
+        phoneNumber: user.phoneNumber,
+        photoURL: user.photoURL,
+        providerData: user.providerData,
+        providerId: user.providerId,
+        refreshToken: user.refreshToken,
+        tenantId: user.tenantId,
+        uid: user.uid,
+        name,
+        apellidos,
+        politicas: politicas[0] === 'on' ? true : false
+    })
+      
+    setUser(user)
+    router.push('/admin/dashboard');
+    },
+  });
 
   return (
     <>
